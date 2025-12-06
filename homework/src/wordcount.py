@@ -3,6 +3,7 @@
 
 
 import argparse
+import os
 
 from homework.src._internals.read_all_lines import read_all_lines
 
@@ -22,20 +23,35 @@ def parse_args():
 
     return parsed_args.input, parsed_args.output
 
+
 def preprocess_lines(lines):
-    pass
+    return [line.strip().lower() for line in lines]
 
 
-def split_into_words(preprocessed_lines):
-    pass
+def split_into_words(lines):
+    words = []
+    for line in lines:
+        words.extend(words.strip(",.!?") for words in line.split())
+    return words
 
 
 def count_words(words):
-    pass
+    counter = {}
+    for word in words:
+        counter[word] = counter.get(word, 0) + 1
+    return counter
 
 
 def write_word_counts(output_folder, word_counts):
-    pass
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    # save the results using tsv format
+    output_path = os.path.join(output_folder, "wordcount.tsv")
+    with open(output_path, "w", encoding="utf-8") as f:
+        for key, value in word_counts.items():
+            # write the key and value to the file
+            f.write(f"{key}\t{value}\n")
 
 
 def main():
